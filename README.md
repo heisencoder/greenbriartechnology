@@ -13,7 +13,7 @@ configured. This README covers day-to-day maintenance.
 
 ## Local development
 
-Requires **Node.js 22.12+**.
+Requires **Node.js 24+**.
 
 ```sh
 npm install      # install dependencies (also enables the git hooks)
