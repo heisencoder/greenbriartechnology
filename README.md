@@ -58,15 +58,19 @@ npm test         # build + run the Playwright tests
 ### Tests
 
 `npm test` runs the [Playwright](https://playwright.dev) tests in `tests/`.
-Playwright builds the site, serves it with `astro preview`, and then:
+Playwright builds the site, serves it with `astro preview`, and then checks
+behavior and structure rather than specific copy (so content edits don't break
+the suite):
 
-- loads every primary page and checks each returns 200 and is well-formed
-  (one `<h1>`, a non-empty `<title>`);
-- crawls all internal links and fails on any that 404, and verifies in-page
-  anchor targets (e.g. `#team`) actually exist;
-- format-checks external and `mailto:` links (external URLs are validated but
-  not fetched, since sites like LinkedIn block automated requests);
-- confirms the founding-team content renders on the About page.
+- **`links.spec.ts`** crawls every page reachable from the home page and, on
+  each, asserts it returns 200, is well-formed (one `<h1>`, non-empty
+  `<title>`, a meta description, a canonical link), has no broken images and no
+  uncaught JS errors; that every internal link resolves and every in-page
+  anchor target exists; that `target="_blank"` links set `rel="noopener"`; and
+  that every page in the nav config is reachable. (External URLs are
+  format-checked but not fetched, since sites like LinkedIn block bots.)
+- **`site.spec.ts`** covers behavior: unknown routes return the 404 page with a
+  link home, and the mobile nav toggle opens and closes the menu.
 
 First run only, install the browser:
 
@@ -222,7 +226,7 @@ Notes:
   (IPv6) records are optional but recommended; if NameCheap rejects them you can
   safely omit them and keep just the A records.
 - DNS changes can take from a few minutes up to ~30 minutes (occasionally
-  longer) to propagate. You can check progress with
+  longer) to propagate. You can check progress witm
   `dig www.greenbriartechnology.com +short` and
   `dig greenbriartechnology.com +short`.
 
