@@ -9,14 +9,17 @@ import { NAV } from '../src/consts';
 //
 // This complements the deterministic image-dimension check in links.spec.ts:
 // that one guards the most common *cause*; this one guards the *symptom*, so it
-// also catches shift from sources that aren't images (late-swapping fonts,
-// dynamically injected content, etc.).
+// also catches shift from sources that aren't images — dynamically injected
+// content, or a font that's allowed to swap mid-view (the @font-face rules use
+// font-display: optional precisely so they never do).
 //
-// The budget is a small epsilon, not literal 0: CLS is timing- and
-// viewport-dependent and a web-font swap can nudge it a hair. Google's "good"
-// cutoff is 0.1; we hold a much tighter 0.02 because these pages are designed to
-// be shift-free.
-const CLS_BUDGET = 0.02;
+// The budget is a small epsilon, not literal 0: even with no real shift, layout
+// measurement carries sub-pixel rounding noise. Measured today, five of six
+// pages are exactly 0 and the home page reads ~3e-5 (its typewriter animation).
+// Google's "good" cutoff is 0.1; we hold 0.001 — comfortably above that noise
+// floor, but well below the ~0.003 a single real regression (an undimensioned
+// image, or a swapping web font) produces.
+const CLS_BUDGET = 0.001;
 
 for (const { href } of NAV) {
   test(`layout stability (CLS): ${href}`, async ({ page }) => {

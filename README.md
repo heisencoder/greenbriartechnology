@@ -50,7 +50,10 @@ link-clean, and accessible.
 
 IBM Plex Mono is **self-hosted** in `public/fonts/` (woff2, weights 400/500/700,
 latin + latin-ext) and declared via `@font-face` in `src/styles/global.css` — so
-the site makes no render-blocking request to Google's font servers. To refresh or
+the site makes no render-blocking request to Google's font servers. The rules use
+`font-display: optional`, so the font never swaps mid-view and contributes no
+layout shift (CLS); a first uncached visit on a slow link may briefly see the
+monospace fallback before the font is cached. To refresh or
 add a weight, fetch the CSS from the Google Fonts css2 endpoint with a modern
 browser User-Agent, download the `latin` / `latin-ext` `.woff2` files it points
 to, drop them in `public/fonts/`, and mirror the `@font-face` block (keeping the
