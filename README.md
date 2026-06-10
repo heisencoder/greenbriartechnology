@@ -1,5 +1,9 @@
 # Greenbriar Technology Group — Website
 
+<p align="center">
+  <img src="assets/profile.png" alt="Greenbriar Technology Group" width="96" height="96" />
+</p>
+
 The static marketing site for **Greenbriar Technology Group**, live at
 [www.greenbriartechnology.com](https://www.greenbriartechnology.com).
 
@@ -59,6 +63,22 @@ browser User-Agent, download the `latin` / `latin-ext` `.woff2` files it points
 to, drop them in `public/fonts/`, and mirror the `@font-face` block (keeping the
 `unicode-range`). The body weight (400 latin) is preloaded in `Layout.astro`.
 
+## Brand icons
+
+`public/favicon.svg` is the single source of truth for the mark (a teletype
+prompt chevron in mint with a burnt-orange cursor bar). The raster derivatives —
+`public/favicon.ico` (the legacy multi-size fallback, 16/32/48&nbsp;px) and
+`assets/profile.png` (512&nbsp;px, used as the GitHub org avatar and the badge at
+the top of this README) — are generated from it:
+
+```sh
+node scripts/gen-icons.mjs   # re-run after editing favicon.svg
+```
+
+`assets/` lives outside the Astro build, so the profile image isn't published to
+the website. To set the org avatar, upload `assets/profile.png` under the
+organization's **Settings → Profile**.
+
 ## Quality checks
 
 `npm run lint` and `npm test` run in CI on every pull request
@@ -89,6 +109,7 @@ apex→www redirect are already set up — there's nothing to do.
 ## Project structure
 
 ```text
+assets/                  # brand assets NOT published to the site (GitHub profile image)
 public/                  # copied verbatim into the build (CNAME, favicon, team photos, fonts)
 src/
 ├── components/           # Nav, Footer, PageHeader, CallToAction
@@ -97,7 +118,7 @@ src/
 ├── styles/global.css     # theme + all shared styles
 └── consts.ts             # site info + nav links
 tests/                    # Playwright tests (structure, behavior, a11y)
-scripts/                  # ad-hoc external link checker
+scripts/                  # ad-hoc external link checker + icon generator
 .github/workflows/        # ci.yml (lint + tests), deploy.yml (build + deploy)
 ```
 
